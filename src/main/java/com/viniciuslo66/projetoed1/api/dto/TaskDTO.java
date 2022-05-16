@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 public class TaskDTO {
   private Long id;
 	private String cabecalho;
-	private Integer conteudo;
+	private String conteudo;
 	private Long usuario;
 }
