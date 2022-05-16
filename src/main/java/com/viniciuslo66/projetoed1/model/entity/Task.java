@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "lancamento", schema = "financas")
+@Table(name = "task", schema = "todo")
 public class Task {
 
   @Id
