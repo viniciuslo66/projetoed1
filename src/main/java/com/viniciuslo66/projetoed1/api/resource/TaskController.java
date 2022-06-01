@@ -1,8 +1,9 @@
 package com.viniciuslo66.projetoed1.api.resource;
 
 import java.util.List;
-import java.util.Optional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.viniciuslo66.projetoed1.Util.MyList;
 import com.viniciuslo66.projetoed1.api.dto.TaskDTO;
 import com.viniciuslo66.projetoed1.error.RegraNegocioException;
 import com.viniciuslo66.projetoed1.model.entity.Task;
@@ -25,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("api/tasks")
+@RequestMapping("tasks")
 @RequiredArgsConstructor
 public class TaskController {
 
@@ -33,27 +34,24 @@ public class TaskController {
   private final UsuarioService usuarioService;
 
   @GetMapping
-  public ResponseEntity buscar(
-      @RequestParam(value = "cabecalho", required = false) String cabecalho,
-      @RequestParam("usuario") Long idUsuario) {
+  public ResponseEntity<MyList<Task>> listar() throws JsonProcessingException {
+    MyList<Task> tList = service.listar();
+    return ResponseEntity.ok().body(tList);
+  }
+
+  @GetMapping("/buscar")
+  public ResponseEntity<?> buscar(
+      @RequestParam(value = "cabecalho", required = false) String cabecalho) {
 
     Task taskFiltro = new Task();
     taskFiltro.setCabecalho(cabecalho);
-
-    Optional<Usuario> usuario = usuarioService.obterPorId(idUsuario);
-    if (!usuario.isPresent()) {
-      return ResponseEntity.badRequest()
-          .body("Não foi possível realizar a consulta. Usuário não encontrado para o Id informado.");
-    } else {
-      taskFiltro.setUsuario(usuario.get());
-    }
 
     List<Task> task = service.buscar(taskFiltro);
     return ResponseEntity.ok(task);
   }
 
   @PostMapping
-  public ResponseEntity salvar(@RequestBody TaskDTO dto) {
+  public ResponseEntity<?> salvar(@RequestBody TaskDTO dto) {
     try {
       Task entidade = converter(dto);
       entidade = service.salvar(entidade);
@@ -64,7 +62,7 @@ public class TaskController {
   }
 
   @PutMapping("{id}")
-  public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody TaskDTO dto) {
+  public ResponseEntity<?> atualizar(@PathVariable("id") Long id, @RequestBody TaskDTO dto) {
     return service.obterPorId(id).map(entity -> {
       try {
         Task task = converter(dto);
@@ -78,7 +76,7 @@ public class TaskController {
   }
 
   @DeleteMapping("{id}")
-  public ResponseEntity deletar(@PathVariable("id") Long id) {
+  public ResponseEntity<?> deletar(@PathVariable("id") Long id) {
     return service.obterPorId(id).map(entidade -> {
       service.deletar(entidade);
       return new ResponseEntity(HttpStatus.NO_CONTENT);

@@ -3,6 +3,7 @@ package com.viniciuslo66.projetoed1.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.viniciuslo66.projetoed1.Util.MyList;
 import com.viniciuslo66.projetoed1.model.entity.Task;
 
 public interface TaskService {
@@ -13,6 +14,8 @@ public interface TaskService {
 	void deletar(Task Task);
 	
 	List<Task> buscar( Task TaskFiltro );
+
+	MyList<Task> listar();
 
   void validar (Task Task);
 

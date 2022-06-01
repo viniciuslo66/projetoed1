@@ -2,6 +2,7 @@ package com.viniciuslo66.projetoed1.service.impl;
 
 import java.util.Optional;
 
+import com.viniciuslo66.projetoed1.Util.MyList;
 import com.viniciuslo66.projetoed1.error.ErroAutenticacao;
 import com.viniciuslo66.projetoed1.error.RegraNegocioException;
 import com.viniciuslo66.projetoed1.model.entity.Usuario;
@@ -20,7 +21,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     this.repository = repository;
   }
 
-  @Override
   public Usuario autenticar(String email, String senha) {
     Optional<Usuario> usuario = repository.findByEmail(email);
 
@@ -35,14 +35,19 @@ public class UsuarioServiceImpl implements UsuarioService {
     return usuario.get();
   }
 
-  @Override
   @Transactional
   public Usuario salvarUsuario(Usuario usuario) {
     validarEmail(usuario.getEmail());
     return repository.save(usuario);
   }
 
-  @Override
+  @Transactional(readOnly = true)
+  public MyList<Usuario> listar() {
+    MyList<Usuario> uList = new MyList<Usuario>();
+    uList.addAll(repository.findAll());
+    return uList;
+  }
+
   public void validarEmail(String email) {
     boolean existe = repository.existsByEmail(email);
     if (existe) {
@@ -50,9 +55,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
   }
 
-  @Override
   public Optional<Usuario> obterPorId(Long id) {
     return repository.findById(id);
   }
-  
+
 }

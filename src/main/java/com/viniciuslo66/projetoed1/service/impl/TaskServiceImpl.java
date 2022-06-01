@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.viniciuslo66.projetoed1.Util.MyList;
 import com.viniciuslo66.projetoed1.error.RegraNegocioException;
 import com.viniciuslo66.projetoed1.model.entity.Task;
 import com.viniciuslo66.projetoed1.model.repository.TaskRepository;
@@ -24,14 +25,12 @@ public class TaskServiceImpl implements TaskService {
     this.repository = repository;
   }
 
-  @Override
   @Transactional
   public Task salvar(Task Task) {
     validar(Task);
     return repository.save(Task);
   }
 
-  @Override
   @Transactional
   public Task atualizar(Task Task) {
     Objects.requireNonNull(Task.getId());
@@ -39,17 +38,22 @@ public class TaskServiceImpl implements TaskService {
     return repository.save(Task);
   }
 
-  @Override
   @Transactional
   public void deletar(Task Task) {
     Objects.requireNonNull(Task.getId());
     repository.delete(Task);
   }
 
-  @Override
   @Transactional(readOnly = true)
-  public List<Task> buscar(Task TaskFiltro) {
-    Example example = Example.of(TaskFiltro,
+  public MyList<Task> listar() {
+    MyList<Task> tList = new MyList<Task>();
+    tList.addAll(repository.findAll());
+    return tList;
+  }
+
+  @Transactional(readOnly = true)
+  public List<Task> buscar(Task taskFiltro) {
+    Example example = Example.of(taskFiltro,
         ExampleMatcher.matching()
             .withIgnoreCase()
             .withStringMatcher(StringMatcher.CONTAINING));
@@ -58,13 +62,13 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public void validar(Task lancamento) {
+  public void validar(Task tarefa) {
 
-    if (lancamento.getCabecalho() == null || lancamento.getCabecalho().trim().equals("")) {
+    if (tarefa.getCabecalho() == null || tarefa.getCabecalho().trim().equals("")) {
       throw new RegraNegocioException("Informe uma cabeçalho válido.");
     }
 
-    if (lancamento.getConteudo() == null || lancamento.getConteudo().trim().equals("")) {
+    if (tarefa.getConteudo() == null || tarefa.getConteudo().trim().equals("")) {
       throw new RegraNegocioException("Informe um conteúdo válido");
     }
   }
