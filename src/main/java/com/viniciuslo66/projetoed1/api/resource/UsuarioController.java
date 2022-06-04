@@ -8,6 +8,8 @@ import com.viniciuslo66.projetoed1.error.RegraNegocioException;
 import com.viniciuslo66.projetoed1.model.entity.Usuario;
 import com.viniciuslo66.projetoed1.service.UsuarioService;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
@@ -25,12 +28,24 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("usuarios")
 @RequiredArgsConstructor
 public class UsuarioController {
+
   private final UsuarioService service;
 
   @GetMapping
   public ResponseEntity<MyList<Usuario>> listar() throws JsonProcessingException {
     MyList<Usuario> uList = service.listar();
     return ResponseEntity.ok().body(uList);
+  }
+
+  @GetMapping("/buscar")
+  public ResponseEntity<?> buscar(
+      @RequestParam(value = "email") String email) {
+
+    Usuario usuarioFiltro = new Usuario();
+    usuarioFiltro.setEmail(email);
+
+    List<Usuario> task = service.buscar(usuarioFiltro);
+    return ResponseEntity.ok(task);
   }
 
   @PostMapping("/autenticar")

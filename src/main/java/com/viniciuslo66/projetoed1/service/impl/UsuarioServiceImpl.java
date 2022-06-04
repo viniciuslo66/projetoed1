@@ -1,5 +1,6 @@
 package com.viniciuslo66.projetoed1.service.impl;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -10,6 +11,9 @@ import com.viniciuslo66.projetoed1.model.entity.Usuario;
 import com.viniciuslo66.projetoed1.model.repository.UsuarioRepository;
 import com.viniciuslo66.projetoed1.service.UsuarioService;
 
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,6 +66,16 @@ public class UsuarioServiceImpl implements UsuarioService {
     return uList;
   }
 
+  @Transactional(readOnly = true)
+  public List<Usuario> buscar(Usuario taskFiltro) {
+    Example example = Example.of(taskFiltro,
+        ExampleMatcher.matching()
+            .withIgnoreCase()
+            .withStringMatcher(StringMatcher.EXACT));
+
+    return repository.findAll(example);
+  }
+
   public void validarEmail(String email) {
     boolean existe = repository.existsByEmail(email);
     if (existe) {
@@ -88,7 +102,5 @@ public class UsuarioServiceImpl implements UsuarioService {
       throw new RegraNegocioException("Informe uma senha válida");
     }
   }
-
- 
 
 }
