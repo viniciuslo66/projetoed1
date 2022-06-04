@@ -1,5 +1,6 @@
 package com.viniciuslo66.projetoed1.service.impl;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import com.viniciuslo66.projetoed1.Util.MyList;
@@ -41,6 +42,19 @@ public class UsuarioServiceImpl implements UsuarioService {
     return repository.save(usuario);
   }
 
+  @Transactional
+  public Usuario atualizar(Usuario Task) {
+    Objects.requireNonNull(Task.getId());
+    validar(Task);
+    return repository.save(Task);
+  }
+
+  @Override
+  public void deletar(Usuario usuario) {
+    Objects.requireNonNull(usuario.getId());
+    repository.delete(usuario);
+  }
+
   @Transactional(readOnly = true)
   public MyList<Usuario> listar() {
     MyList<Usuario> uList = new MyList<Usuario>();
@@ -58,5 +72,23 @@ public class UsuarioServiceImpl implements UsuarioService {
   public Optional<Usuario> obterPorId(Long id) {
     return repository.findById(id);
   }
+
+  @Override
+  public void validar(Usuario usuario) {
+
+    if (usuario.getNome() == null || usuario.getNome().trim().equals("")) {
+      throw new RegraNegocioException("Informe um nome válido.");
+    }
+
+    if (usuario.getEmail() == null) {
+      throw new RegraNegocioException("Informe um email válido");
+    }
+
+    if (usuario.getSenha() == null) {
+      throw new RegraNegocioException("Informe uma senha válida");
+    }
+  }
+
+ 
 
 }

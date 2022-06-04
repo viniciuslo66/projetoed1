@@ -26,22 +26,22 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Transactional
-  public Task salvar(Task Task) {
-    validar(Task);
-    return repository.save(Task);
+  public Task salvar(Task task) {
+    validar(task);
+    return repository.save(task);
   }
 
   @Transactional
-  public Task atualizar(Task Task) {
-    Objects.requireNonNull(Task.getId());
-    validar(Task);
-    return repository.save(Task);
+  public Task atualizar(Task task) {
+    Objects.requireNonNull(task.getId());
+    validar(task);
+    return repository.save(task);
   }
 
   @Transactional
-  public void deletar(Task Task) {
-    Objects.requireNonNull(Task.getId());
-    repository.delete(Task);
+  public void deletar(Task task) {
+    Objects.requireNonNull(task.getId());
+    repository.delete(task);
   }
 
   @Transactional(readOnly = true)
@@ -62,13 +62,13 @@ public class TaskServiceImpl implements TaskService {
   }
 
   @Override
-  public void validar(Task tarefa) {
+  public void validar(Task task) {
 
-    if (tarefa.getCabecalho() == null || tarefa.getCabecalho().trim().equals("")) {
+    if (task.getCabecalho() == null || task.getCabecalho().trim().equals("")) {
       throw new RegraNegocioException("Informe uma cabeçalho válido.");
     }
 
-    if (tarefa.getConteudo() == null || tarefa.getConteudo().trim().equals("")) {
+    if (task.getConteudo() == null || task.getConteudo().trim().equals("")) {
       throw new RegraNegocioException("Informe um conteúdo válido");
     }
   }

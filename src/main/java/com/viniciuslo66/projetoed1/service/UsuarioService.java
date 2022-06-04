@@ -12,7 +12,13 @@ public interface UsuarioService {
 
   void validarEmail(String email);
 
+  Usuario atualizar(Usuario usuario);
+
   MyList<Usuario> listar();
+
+  void deletar(Usuario usuario);
+
+  void validar (Usuario usuario);
 
   Optional<Usuario> obterPorId(Long id);
 }
